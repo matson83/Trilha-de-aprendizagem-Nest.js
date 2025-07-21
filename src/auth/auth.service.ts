@@ -70,19 +70,22 @@ export class AuthService {
       throw new UnauthorizedException("Invalid Email");
     }
 
-    return true;
+    return user;
   }
 
   async reset(token: string, password: string) {
-    const id = 0;
+    // Decodifica e verifica o token para obter o ID do usuário
+    const payload = this.jwtService.verify(token, {
+      issuer: "login",
+      audience: "users",
+    });
 
+    const userId = payload.sub;
+
+    // Atualiza a senha do usuário com o id extraído
     const user = await this.prisma.users.update({
-      where: {
-        id,
-      },
-      data: {
-        password,
-      },
+      where: { id: userId },
+      data: { password: password },
     });
 
     return this.createToken(user);
