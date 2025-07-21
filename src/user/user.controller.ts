@@ -10,22 +10,28 @@ import {
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserService } from "./user.service";
 
 @Controller("users")
 export class UserController {
+  constructor(private readonly userService: UserService) {}
   @Post()
-  async createUser(@Body() { name, email, password }: CreateUserDto) {
-    return { name, email, password };
+  async create(@Body() { name, email, password }: CreateUserDto) {
+    return this.userService.create({
+      name,
+      email,
+      password,
+    });
   }
 
   @Get()
   async getUsers() {
-    return { users: [] };
+    return this.userService.list();
   }
 
   @Get(":id")
   async getUserById(@Param("id", ParseIntPipe) id) {
-    return { user: {}, id };
+    return this.userService.findById(id);
   }
 
   @Patch(":id")
@@ -33,11 +39,15 @@ export class UserController {
     @Param("id", ParseIntPipe) id,
     @Body() { name, email, password }: UpdateUserDto,
   ) {
-    return { user: { id, name, email, password } };
+    return this.userService.update(id, {
+      name,
+      email,
+      password,
+    });
   }
 
   @Delete(":id")
   async deleteUser(@Param("id", ParseIntPipe) id) {
-    return { id };
+    return this.userService.delete(id);
   }
 }
