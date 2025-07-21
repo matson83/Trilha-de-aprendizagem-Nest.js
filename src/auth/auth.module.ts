@@ -9,6 +9,11 @@ import { AuthService } from "./auth.service";
   imports: [
     JwtModule.register({
       secret: "Y?ftspH9Grt9CDTTdFnQFp$LXmEa7#3YB",
+      signOptions: {
+        expiresIn: "1h",
+        issuer: "login",
+        audience: "users",
+      },
     }),
     UserModule,
     PrismaModule,
