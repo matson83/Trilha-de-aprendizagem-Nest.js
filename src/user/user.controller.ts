@@ -7,14 +7,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseInterceptors,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserService } from "./user.service";
+import { LogInterceptor } from "src/intecerptors/log.intecerptors";
 
+@UseInterceptors(LogInterceptor)
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @Post()
   async create(@Body() { name, email, password }: CreateUserDto) {
     return this.userService.create({
